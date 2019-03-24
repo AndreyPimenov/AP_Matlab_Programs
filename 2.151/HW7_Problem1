@@ -1,0 +1,154 @@
+%% Start fresh
+clc 
+clear all
+close all
+
+%% Initial parameters
+% State vector X = [P; Q], where P is accumulator pressure and 
+% Q is fuel volumetric flow rate
+I = 1;                  % Fluid line inertance, lbf-sec^2 ft^5
+Ca = 0.000253;          % Accumulator capacitance, ft^5 / lbf
+R = 60.0;               % Engine resistance, lbf-sec/ft^2
+Kp = 0.1;               % Pump coefficient, ft^3/volt-sec
+OS = 0;                 % Maximum overshoot in %
+settleTime = 150E-3;    % Settling time, sec
+sigma0 = 1;             % Pressure sensor white noise, psi
+sigmai = 5;             % Engine back-pressure white noise, psi
+
+%%
+% ***********************************************************************
+% Problem 1 
+% ***********************************************************************
+% 1.1 Then system in state-space
+A = [0 -1/Ca; 1/I -R/I];
+B = [Kp/Ca; 0];
+C = [0 1];
+D = [0];
+sys = ss(A, B, C, D);
+
+%% 1.2 OL system step response
+step(sys); hold on
+
+%% 1.3 Full-state feedback controller
+% Damping ratio
+% zeta = abs(log(OS/100)) / sqrt(pi^2 + (log(OS/100))^2);
+zeta = 1;
+% Natural frequency
+% omegaNatural = pi / (settleTime * sqrt(1 - zeta^2));
+omegaNatural = 4.6 / zeta / settleTime;
+% Now desired pole coordinates are
+poleIm = sqrt(1 - zeta^2) * omegaNatural;
+poleRe = zeta * omegaNatural;
+% Now lets get coefficients for full-state feedback controller
+% K = place(A, B, [-poleRe + 1i*poleIm -poleRe - 1i*poleIm]);
+K = place(A, B, [-poleRe -poleRe + 1E-6]);
+% Now lets study modified system
+ACL = A - B*K;
+% Modified system
+sysFullStateFeedback = ss(ACL, B, C, D);
+step(sysFullStateFeedback);
+
+%% 1.4 Design a Kalman filter
+% The input noise
+Q = sigmai ^ 2;
+% The noise from measurements
+R = sigma0 ^ 2;
+% Cross-correlation
+N = 0;
+% Corrupted input matrix
+Bcorrupted = [[0; -1/I] B];
+% Corrupted output for the fuel flow rate
+Ccorrupted = [1 0];
+% Corrupted system
+sysNoisy = ss(ACL, Bcorrupted, Ccorrupted, 0, ...
+                               'inputname', {'w' 'u'}, 'outputname','y');
+% Then Kalman Observer
+[kalmanEstimator, L, P] = kalman(sysNoisy, Q, R, N);
+
+%% 1.5 Design system with observer
+% Combine system and observer
+Akalman = [ACL B*K; zeros(2) A-L*Ccorrupted];
+% Bkalman = [B; zeros(2, 1)];
+Bkalman = [Bcorrupted; zeros(2, 2)];
+Ckalman = [Ccorrupted zeros(1, 2); C zeros(1, 2)];
+Dkalman = 0;
+% Then system in state-space
+sysKalman = ss(Akalman, Bkalman, Ckalman, Dkalman);
+% Feedback the measurements
+% sysKalman = feedback(sysKalman, 1, 1, 1, 1)
+% Plot pole-zero map for this case
+figure(2)
+pzmap(sysKalman)
+
+%% 1.6 Check system performance with corrupted output
+% Specify simulation time
+t = [0 : 0.35/100 : 0.35]';
+% Corrupt system measurements with noise
+n = length(t);
+rng('default')
+% White noise
+v = sqrt(R)*randn(n,1);
+w = sqrt(Q)*randn(n,1);
+% Then noise from engine back pressure
+% u(1:101, 1) = w;
+% Or ignore noise
+u(1:101, 1) = zeros(101, 1);
+% Step input
+u(1:101, 2) = ones(101, 1);
+% Now simulate the system
+[out, x] = lsim(sysKalman, u, t);
+y = out(:,1);   % true response
+yv = y + v;     % measured response
+figure(3)
+plot(t, y), hold on
+plot(t, yv), hold off
+
+[y, t1, x1] = lsim(sysKalman, u, t, [0 0 0 0.1]);
+[y, t2, x2] = lsim(sysKalman, u, t, [0 0 5 0]);
+[y, t3, x3] = lsim(sysKalman, u, t, [0 0 0 0.5]);
+[y, t4, x4] = lsim(sysKalman, u, t, [0 0 30 0]);
+plot(t1, x1(:,1), 'b', t2, x2(:,1), 'r', t3, x3(:,1), 'g', t4, x4(:,1), 'y');
+
+%%
+% ***********************************************************************
+% Problem 2 
+% ***********************************************************************
+% 2.1 Include a model of this noise spectrum.
+% Break freq
+Omega = 2*pi*5;
+% System matrix
+A = [0 -1/Ca 0; 1/I -R/I -1/I; 0 0 Omega];
+B = [Kp/Ca 0; 0 0; 0 Omega];
+C = [1 0 0; 0 1 0; 0 0 1];
+D = [0];
+sys = ss(A, B, C, D);
+
+%% 2.2 Design system with observer
+% Now lets get coefficients for full-state feedback controller
+K = place(A, B, [-poleRe -poleRe + 1E-6 -poleRe - 1E-6]);
+% Now lets study modified system
+ACL = A - B*K;
+% Modified system
+sysFullStateFeedback = ss(ACL, B, C, D);
+figure(4)
+step(sysFullStateFeedback);
+% Corrupted system
+sysNoisy = ss(ACL, B, C(1, :), 0);
+% Then Kalman Observer
+[kalmanEstimator, L, P] = kalman(sysNoisy, Q, R, N);
+% Combine system and observer
+Akalman = [ACL B*K; zeros(3) A-L*C(1, :)];
+Bkalman = [B; zeros(3, 2)];
+Ckalman = [C(1, :) zeros(1, 3); C(2, :) zeros(1, 3)];
+Dkalman = 0;
+% Then system in state-space
+sysKalman = ss(Akalman, Bkalman, Ckalman, Dkalman);
+% Plot pole-zero map for this case
+figure(5)
+pzmap(sysKalman)
+[out, x] = lsim(sysKalman, u, t);
+y = out(:,1);   % true response
+yv = y + v;     % measured response
+figure(3)
+plot(t, y), hold on
+plot(t, yv), hold off
