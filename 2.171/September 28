@@ -1,0 +1,78 @@
+This piece of code belong to my friend. But this piece is real beutiful
+
+clc
+clear all
+close all
+
+%% Initial values
+% Descretization step
+Ts = 1;
+% Lets define transfer function
+z = tf('z',Ts);
+r1 = 0.7; % Complex Zeros
+r2 = 0.9; % Complex Poles
+% Angle of the zero
+o1 = 45*(2*pi)/360;
+% Angle of the pole
+o2 = 50*(2*pi)/360;
+% System order
+N = 1;
+
+%% Construct equations
+% Equations for zeros - enumerator
+sysCF_zeros = (z^2) - 2*r1*cos(o1)*z + r1^2;
+% Equations for poles - denominator
+sysCF_poles = (z^2) - 2*r2*cos(o2)*z + r2^2;
+% Now the final transfer function (+ two poles in z1 = z2 = 1)
+sysCF = (sysCF_zeros / sysCF_poles)*(1/(z-1)^2);
+% Let me play with numbers of identical poles and zeros. Just for fun.
+Nth_sysCF = sysCF ^ N;
+
+% Convert transfer function to state-space form. Where ABCD are state-space
+% matrices
+[sysSS_A, sysSS_B, sysSS_C, sysSS_D] = tf2ss(sysCF.num{:}, sysCF.den{:});
+
+% Create state-space model from available coefficients ABCD
+% Creates the discrete-time model in state-space 
+sysSS = ss(sysSS_A, sysSS_B, sysSS_C, sysSS_D, Ts);
+% We ïîñëåäîâàòåëüíî ñîåäèíÿåì áëîêè ìîäåëåé â äëèííóþ öåïî÷êó
+% (óâåëè÷èââåì ïîðÿäîê ñèñòåìû) êîìàíäà series ïîñëåäîâàòåëüíî (ìàòðè÷íî)
+% ñêëàäûâàåò (óìíîæàåò) ñèñòåìû
+Nth_sysSS = series(sysSS, sysSS);
+for R = 1:(N-1)
+Nth_sysSS = series(Nth_sysSS, sysSS);
+end
+
+% Create descrete? transfer function
+sysZPK = zpk(sysSS);
+% Incresaing the order of the system in time domain 
+% (multipluing by constant in breakets - sysSS)
+Nth_sysZPK = sysZPK ^ N;
+
+%% PLOT EVEERYTHING!
+% Ñèñòåìà Í-ïîðÿäêà â ïðîñòðàíñòâå ñîñòîÿíèé
+bode(Nth_sysSS, 'blue')
+hold on
+grid on
+% Ñèñòåìà Í-ïîðÿäîêà â ïîëèíîìèíàëüíîì âèäå
+bode(Nth_sysZPK, 'red')
+% Êðèâóëèíû äëÿ ñ÷àñòüÿ 
+% bode(sysCF, 'r') % - ñèñòåìà áåç ïîðÿäêà
+bode(Nth_sysCF, 'black-.') % - ñèñòåìà N - ïîðÿäîêà
+
+% Initial system without N order
+% À ìû ïàöàíû ïðîñòûå - íå âûúåáûâàåìñÿ
+% subplot(4,2,1), pzmap(sysCF), title('Original PZ Map')
+% subplot(4,2,2), bode(sysCF),  title('Original Bode')
+% % N-order system (the same one, but in power N) 
+% subplot(4,2,3), pzmap(Nth_sysCF), title('Nth Polynomial PZ Map')
+% subplot(4,2,4), bode(Nth_sysCF), title('Nth Polynomial Bode')
+% % N-order but in state-space representation 
+% subplot(4,2,5), pzmap(Nth_sysSS), title('Nth SS PZ Map')
+% subplot(4,2,6), bode(Nth_sysSS), title('Nth SS Bode')
+% % N-order but in polynomical form representation
+% subplot(4,2,7), pzmap(Nth_sysZPK), title('Nth ZPK PZ Map')
+% subplot(4,2,8), bode(Nth_sysZPK), title('Nth ZPK Bode')
+
+ 
+
