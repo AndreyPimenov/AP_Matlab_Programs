@@ -1,0 +1,71 @@
+%%d/dt[P;Q]=A[P;Q]+B[Pe;Vc]output=Q=[0 1][P;Q]
+%% begining
+clc
+clear all
+close all
+%Given
+I=1;
+Cac=0.000253;
+R=60;
+Kp=0.1;
+%State-space matrix
+A=[0 -1/Cac; 1/I -R/I];
+B=[Kp/Cac; 0];
+C=[0 1];
+Model = ss(A,B,C,0)
+%% (1.2) create a system 
+Model=ss(A,B,C,0);
+step (Model);
+xlabel ('time, seconds');
+ylabel ('Flowrate, Q');
+title ('Open-Loop response');
+%% (1.3) Design fuul state-feedback regulator
+zita=0.45;
+wn=44.4;
+p=[-zita*wn+wn*sqrt(1-zita^2)*i,-zita*wn-wn*sqrt(1-zita^2)*i];
+%regulator
+K= place(A, B, p)
+model_CL=ss(A-B*K,B,C,0);
+step (model_CL)
+xlabel ('time, seconds');
+ylabel ('Flowrate, Q');
+title ('CLose-Loop response');
+bode(model_CL);
+
+%% (1.4) Design KF
+sigma0=1;
+sigmai=5;
+Bkf=[Kp/Cac 0; 0 -1/I];
+Ckf=[1 0];
+model_kf=ss(A,Bkf,Ckf,0); 
+Wo=sigma0^2;
+Wi=sigmai^2;
+[kest,L,P]=kalman(model_kf,Wi,Wo,0)
+
+%% (1.5)Complete CL system pole-sero plots
+Obs=ss(A-L*Ckf, Bkf, Ckf, 0);
+pzmap(Obs);
+title ('Observer');
+%for System_Complete
+SC= ss([A-B*K, B*K; 0*A, A-L*Ckf], [B; 0*B], [Ckf, 0*Ckf; C, 0*C], 0)
+pzmap (SC);
+title ('System Complete Pole-zero placement');
+
+%% (1.6)
+[kest,L,P]=kalman(model_kf,1,1,0)%wi=wo=1 - without noise
+SC= ss([A-B*K, B*K; 0*A, A-L*Ckf], [B; 0*B], [Ckf, 0*Ckf; C, 0*C], 0)
+step(SC);
+
+%% (2.2) Redesign KF
+omegac=10*pi;
+% matrix from the 2.1 on the list
+Are= [0 -1/Cac 0; 1/I -R/I -1/I; 0 0 -omegac];
+Bre= [Kp/Cac; 0; 0];
+Cre= [1 0 0];
+Gre= [0; 0; omegac];
+New_model=ss(Are, [Bre Gre], Cre, 0);
+[kest,L,P]=kalman(New_model,Wi,Wo,0)
+figure (1)
+step (kest)
+figure (2)
+pzmap (kest)
