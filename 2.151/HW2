@@ -75,3 +75,21 @@ title('Time dependence')
 grid on
 xlabel('time, sec')
 ylabel('x, m')
+
+...................................................
+
+function xdot = model_template(~,x)
+global P Q
+
+% Template for state equations. Neville Hogan
+
+% Extract states (just for readability)
+x1 = x(1);
+x2 = x(2);
+
+% State equations (replace with your code)
+x1dot = 0*x1 + 1*x2;
+x2dot = P*x1 + Q*x2;
+
+% Return the state derivatives to the ODE solver
+xdot = [x1dot; x2dot];
