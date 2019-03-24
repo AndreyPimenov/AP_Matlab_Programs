@@ -1,1 +1,96 @@
+clc
+clear all
+close all
+%%initialization
+t = 0: 0.1:50;
+x1 = -1.67*exp(-2*t) + 2.66*exp(-t/2);
+x2 = 1.67*exp(-2*t) + 1.33*exp(-t/2);
+%%Graphicks
+plot(x1, x2, 'b', 'LineWidth', 1)
+grid on
+xlabel('x1(t)')
+ylabel('x2(t)')
+title('state-space trajectory')
 
+.........................................................
+
+clc
+%clear all
+close all
+%% The initial values
+% State?matrix
+A = [0 1; -4 -1];
+% Initial conditions
+x1 = [1; 0];
+x2 = [0, 1];
+%% Solution
+% Lets find eigenvalues
+eigenvalues = eig(A);
+% Real part
+real = real(eigenvalues);
+% Im part
+image = imag(eigenvalues);
+% Then system in state?space form
+B = zeros(2, 1);
+C = diag([1 1]);
+D = zeros(2,1);
+% Lets create the system
+system = ss(A, B, C, D, 'OutputName', {'y1', 'y2'}, ...
+'StateName', {'x1','x2'}, 'TimeUnit', 'sec');
+% System response from initial condition
+responseInitial_1 = initial(system, x1, 10);
+responseInitial_2 = initial(system, x2, 10);
+%%Graphicks
+plot(x1, x2, 'b', 'LineWidth', 1)
+grid on
+xlabel('x1(t)')
+ylabel('x2(t)')
+
+............................................................................
+
+% This script demonstrates a modified canonical (modal) transformation of 
+% a linear time-invariant state-determined system.
+% Based on the model assumed in "Generalized eigenvalue problem"
+% Neville Hogan
+
+% Parameters; arbitrary values
+m1 = 1;                 % mass, kg
+m2 = 2;                 % mass, kg
+k1 = 1;                 % stiffness, N/m
+k2 = 2;                 % stiffness, N/m
+z1 = 0.4;               % damping ratio
+z2 = 0.5;               % damping ratio
+b1 = 2*z1*(k1*m1)^0.5;  % damping, N/m/s
+b2 = 2*z2*(k2*m2)^0.5;  % damping, N/m/s
+
+M = [m2 0; 0 m1];                           % mass matrix
+B = [b2 -b2; -b2 b1+b2];                    % damping matrix
+K = [k2 -k2; -k2 k1+k2];                    % stiffness matrix
+S = [0; 1];                                 % input weighting matrix
+
+A = [zeros(2) eye(2); -inv(M)*K -inv(M)*B]; % system matrix
+
+[V,D] = eig(A);                             % eigenstructure
+
+% The following assumes complex-valued eigenvalues.
+% Adjacent columns of 'modal matrix' V are complex conjugates.
+% Select their real and imaginary components as follows
+
+a = (V(:,1) + V(:,2))/2;
+b = (V(:,1) - V(:,2))/2i;
+c = (V(:,3) + V(:,4))/2;
+d = (V(:,3) - V(:,4))/2i;
+
+% Construct a transformation matrix from these (real-valued) components
+
+T = [a b c d];
+
+% Transform the system matrix
+
+Am = inv(T)*A*T;
+
+% Mode shapes and undamped natural frequencies
+
+[Mo,W] = eig(inv(M)*K); % Generalized eigenstructure problem
+
+W = W^0.5;  % Generalized eigenvalues are undamped frequencies squared
