@@ -36,3 +36,20 @@ p = [1 -12.1 40.59 -17.015 -71.95 35.88]
 x = -1.5 : 0.1: 6.7
 y = polyval (p, x)
 plot (x,y)
+
+% Roots of a Polynomial
+r  = roots(p)
+
+% This is very important fucntion to find the roots of a quadratic
+% equation
+
+roots([4 10 -8])
+
+% And vise-verse: when the roots of a polynomial are known, the p o l y 
+% command can be used for detecting the coefficients of the polynomial:
+
+r = [6.5 4 2.3 -1.2 0.5]
+p = poly(r)
+
+% 8.1.3 Addition, Multiplication and \Division of P{olynomials
+
