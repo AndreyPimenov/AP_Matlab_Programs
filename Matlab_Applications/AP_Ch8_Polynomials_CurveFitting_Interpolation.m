@@ -26,3 +26,13 @@
 % elements are the coefficients an, a(n-1), ..., a1, a0
 
 p = [8 5] % 8*x + 5
+x = 2
+% The value of a polynomial at a point x can be calculated with the
+% fucntion p o l y v a l that has the form:
+polyval (p, x)
+
+% Sample Problem 8 - 1: Calculating polynomials with MATLAB
+p = [1 -12.1 40.59 -17.015 -71.95 35.88]
+x = -1.5 : 0.1: 6.7
+y = polyval (p, x)
+plot (x,y)
