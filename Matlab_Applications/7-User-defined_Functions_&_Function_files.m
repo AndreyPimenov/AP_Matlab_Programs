@@ -3,7 +3,14 @@ clear all;
 
 Grades = [80 75 91 60 79 89 65 80 95 50 81]; % 7.10
 [AveGrade, StanDeviation] = stat(Grades) % Subfucntions
-[Avegrade2, StanDeviation2] = statNest(Grades) % Nested Functions
+[Avegrade2, StanDeviation2] = statNest(Grades) % Nested Fucntions
+
+Mexico_population = expGD(67,79,6,20) % 7.12
+half_life_radioactive = expGD(7, 3.5, 5.8, 30)
+Russina_population = expGD(142.856536, 146.267288, 5, 40)
+
+[h d] = trajectory (230, 39)
+
 
 % A user-defined function ia MATLAB file that is created by user, saved as 
 % function file, and then used like a build-in function
@@ -150,7 +157,7 @@ plot (x,y);
 xlabel('x2'), ylabel('y2')
 end
 
-% -------------------------------------------
+% ----------------------------------------------------------------------
 
 % SubFucntions
 
@@ -191,13 +198,61 @@ me = AVG(v);
 SD = StandDiv(v);
 end
 
-    
+% ----------------------------------------------------------------------
 
+% 7-5 Exponential growth and decay
+% (a) The population of Mexico was 67M in the 1980 and 79M in 1986. 
+%     Estimate the population in 2000 
+% (b) The half-life of radioactive material is 5.8 years.
+%     How much of a 7-gram sample will be left after 30 years?
+% (с) The population of Russia was 142856536 in 2010
+%                       and became 146267288 in 2015
+%     Estimate the population in 2050
+%     Which year it achives 500M ?
 
+function At = expGD(A0, At1, t1, t)
+% expGD calculates Exponentioal Growth and Decay
+% Input arguments are:
+% A0: Quantity at time zero
+% At1: Quantity at time t1
+% t1: The time t1
+% t: time t
+% Output arguments are:
+% At: Quantity at time t
+k = log(At1 / A0)/t1;
+At = A0 * exp(k*t)
+end
 
+% -----------------------------------------------------------
 
+% 7-6: Motion of a projectile
+function [hmax, dmax] = trajectory (v0, theta)
+% trajectory calculates the max height and distance of a projectile,
+% and makes a plot of the trajectory.
+% Input arguments are:
+% v0: initial velocity in (m/s)
+% theta: angle in degrees
+% Output arguments are:
+% hmax: maximum height in (m)
+% dmax: maximum distance in (m)
+% The fucntion creates also a plot of the trajectory
 
+g = 9.81;
+v0x = v0*cos(theta*pi/180);
+v0y = v0*sin(theta*pi/180);
+thmax = v0y / g;
+hmax = v0y^2 / (2*g);
+ttot = 2*thmax;
+dmax = v0x*ttot;
 
+% Creating a trajectory plot 
+tplot = linspace (0, ttot, 200); % creating a time vector with 200 elements
+x = v0x * tplot;
+y = v0y * tplot - 0.5*g*tplot.^2;
+plot(x,y);
+xlabel ('DISTANCE (m)')
+ylabel ('HEIGHT (m)')
+title ('PROJECVTILE''S TRAJECTORY')
 
-
+end
 
