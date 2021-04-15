@@ -1,8 +1,8 @@
 % AP_Ch8_Polinomials,Curve_Fitting,_and_Interpolation
 % 
 % Polynomials are mathematical expression that are frequently used for
-% problem solving and modeling in science and enginnering. In many cases an
-% equation that is written int he process of solving a problem is a
+% problem solving and modeling in science and engineering. In many cases an
+% equation that is written in the process of solving a problem is a
 % polynomial, and the solution of the problem is the zero of the
 % polynomial. 
 %
@@ -18,3 +18,11 @@
 % between the points. In a more sophistikated interpolation, data from
 % additional points is used. 
 % 
+% 8.1 Polynomials 
+% Polynomilas are functions that have the form:
+% f(x) = an*xn + a(n-1)*x(n-1) + ... + a1*x + a0
+% an, a(n-1), ... , a1, a0 are real numbers
+% in MATLAB, polynomials are represented by a row vector in which the 
+% elements are the coefficients an, a(n-1), ..., a1, a0
+
+p = [8 5] % 8*x + 5
