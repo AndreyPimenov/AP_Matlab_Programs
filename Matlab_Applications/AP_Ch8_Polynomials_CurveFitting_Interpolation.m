@@ -140,20 +140,20 @@ xlabel('x'); ylabel('y');
 % are not polynomials to given data.
 %
 % Rewrite fucntions of differnet types to polynomial form:
-% Type of     | Classical        | Rewriting               | Linear        |
-% function    | form             | form                    | relationship: | 
-% ------------|------------------|-------------------------|---------------|
-% Power       | y = b*x^m        | ln(y) = m*ln(x) + ln(b) | ln(y) & ln(x) | 
+% Type of     | Classical        | Rewriting               | Linear        | Other considerations
+% function    | form             | form                    | relationship: | In choosing functions:
+% ------------|------------------|-------------------------|---------------|-----------------------------------------------------------------
+% Power       | y = b*x^m        | ln(y) = m*ln(x) + ln(b) | ln(y) & ln(x) | y = 0 when x = 0  
 %             |                  |                         |               |
-% ------------|------------------|-------------------------|---------------|
-% Exponential | y = b*e^mx       | ln(y) = mx + ln(b)      | ln(y) & x     |
-%             | y = b*10^mx      | log(y) = mx + log(b)    |               |
-% ------------|------------------|-------------------------|---------------|
-% Logarithmic | y = m*ln(x) + b  | the same                | y & ln(x)     |
+% ------------|------------------|-------------------------|---------------|-----------------------------------------------------------------
+% Exponential | y = b*e^mx       | ln(y) = mx + ln(b)      | ln(y) & x     | 1) Cannot pass through origin
+%             | y = b*10^mx      | log(y) = mx + log(b)    |               | 2) can fit only data with all positive y's or all negative y's
+% ------------|------------------|-------------------------|---------------|-----------------------------------------------------------------
+% Logarithmic | y = m*ln(x) + b  | the same                | y & ln(x)     | 1) Cannot model x = 0 or negative values of x
 %             | y = m*log(x) + b |                         |               |
-% ------------|------------------|-------------------------|-------------- |
-% Reciprocal  | y = 1 / (mx + b) | 1/y = mx + b            |1/y & x        |
+% ------------|------------------|-------------------------|---------------|-----------------------------------------------------------------
+% Reciprocal  | y = 1 / (mx + b) | 1/y = mx + b            |1/y & x        | 1) Cannot model y = 0
 %             |                  |                         |               |
-% ------------|------------------|-------------------------|---------------|
+% ------------|------------------|-------------------------|---------------|-----------------------------------------------------------------
 
 
