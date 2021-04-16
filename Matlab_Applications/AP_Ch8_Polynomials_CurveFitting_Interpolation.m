@@ -125,5 +125,35 @@ d = polyder (f1, f2)
 % y - vector with the vertical coordintaes
 % n - is degree of polynomial
 
+x = [0.9 1.5 3 4 6 8 9.5];
+y = [0.9 1.5 2.5 5.1 4.5 4.9 6.3];
+p = polyfit(x,y,4)
+xp = 0.9 : 0.1 : 9.5;
+yp = polyval (p,xp)
+plot (x, y, 'o', xp, yp)
+xlabel('x'); ylabel('y');
+
+% ------------------------------
+% Curve fitting with Fucntions other tahn Polynomials
+% 
+% Many situations in science and enginnering require fitting fucntions that 
+% are not polynomials to given data.
+%
+% Rewrite fucntions of differnet types to polynomial form:
+% Type of     | Classical        | Rewriting               | Linear        |
+% function    | form             | form                    | relationship: | 
+% ------------|------------------|-------------------------|---------------|
+% Power       | y = b*x^m        | ln(y) = m*ln(x) + ln(b) | ln(y) & ln(x) | 
+%             |                  |                         |               |
+% ------------|------------------|-------------------------|---------------|
+% Exponential | y = b*e^mx       | ln(y) = mx + ln(b)      | ln(y) & x     |
+%             | y = b*10^mx      | log(y) = mx + log(b)    |               |
+% ------------|------------------|-------------------------|---------------|
+% Logarithmic | y = m*ln(x) + b  | the same                | y & ln(x)     |
+%             | y = m*log(x) + b |                         |               |
+% ------------|------------------|-------------------------|-------------- |
+% Reciprocal  | y = 1 / (mx + b) | 1/y = mx + b            |1/y & x        |
+%             |                  |                         |               |
+% ------------|------------------|-------------------------|---------------|
 
 
