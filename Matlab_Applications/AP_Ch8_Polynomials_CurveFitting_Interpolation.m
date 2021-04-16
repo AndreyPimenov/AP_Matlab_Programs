@@ -85,3 +85,45 @@ d = polyder (f1, f2)
 % Curve fitting, also called regression analysis, is a process of fitting a
 % fucntion to a set of data points. The function can then be used as a
 % matehmatical model of the data. 
+
+% Polynomials can be used to fit data points in two ways. In one the
+% polynomial passes through all data points, and the other the polynomial 
+% does not necessary pass through any of the points but overall gives a
+% good aproximation of the data.
+
+% N.B. polynomials of high degraa might give a large error if they are used
+% to estimate values between data points.
+
+% The most common method of finding the best fit to data points is
+% the method of least squares.
+% ----------------------------
+% Least Squares Method:
+%
+% In this method, the coefficients of the polynomial are determined by
+% minimising the sum of the squares of the residuals at all the data
+% points. The residual at each point is defined as the difference between
+% the value of the polynomial and the value of the data.
+% Example:
+% (x1, y1); (x2,y2); (x3,y3); (x4,y4);  - data points
+% f(x) = a1*x + a0 - 1st aproximation
+% The residual at each point Ri: Ri = f(xi) - yi
+% R = [f(x1) - y1]^2 + [f(x2) - y2]^2 + [f(x3) - y3]^2 + [f(x4) - y4]^2
+% then finding R as fucntion of a1 and a0, by f(x) substracting
+% The minimum of R can be find by partial derivatives of R with respect to
+% a0 and a1 and equating them to zero:
+% dR / da1 = 0  and dR / da0 = 0
+% this results in a system of two equations with two unknows:a1 and a0. 
+% the solution of these equations gives the values of the coefficients of
+% the polynomial that best fits the data. 
+% The same procedure can be followed with the more points and 
+% high-order polynomials. 
+% ------------------------------
+% Curve with polynomials is done with p o l y f i t
+%
+% p = polyfit (x, y, n)
+% x - vector with the horizontal coordinates
+% y - vector with the vertical coordintaes
+% n - is degree of polynomial
+
+
+
