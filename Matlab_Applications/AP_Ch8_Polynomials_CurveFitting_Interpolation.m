@@ -39,17 +39,30 @@ plot (x,y)
 
 % Roots of a Polynomial
 r  = roots(p)
-
-% This is very important fucntion to find the roots of a quadratic
+% This is very important function to find the roots of a quadratic
 % equation
-
 roots([4 10 -8])
 
 % And vise-verse: when the roots of a polynomial are known, the p o l y 
 % command can be used for detecting the coefficients of the polynomial:
-
 r = [6.5 4 2.3 -1.2 0.5]
 p = poly(r)
 
-% 8.1.3 Addition, Multiplication and \Division of P{olynomials
+% 8.1.3 Addition, Multiplication and \Division of Polynomials
+% by adding (substracting) coefficients.
+% the dhorter vector has to be modified to be of the same lenght as
+% the longer vector by adding zeros. 
+p1 = [3 15 0 -10 -3 15 -40];
+p2 = [3 0 -2 -6];
+p = p1 +[ 0 0 0 p2];
 
+% Multiplication
+pm = conv (p1, p2);
+
+% Division
+% A polynomial can be devided by another polynomial with the MATLAB
+% built-in function deconv, which has trhe form:
+u = [2 9 7 -6];
+v = [1 3];
+[a b] = deconv (u, v)
+[a b] = deconv (p1, p2)
