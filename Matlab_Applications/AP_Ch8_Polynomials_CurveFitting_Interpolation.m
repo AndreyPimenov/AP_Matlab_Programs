@@ -66,3 +66,22 @@ u = [2 9 7 -6];
 v = [1 3];
 [a b] = deconv (u, v)
 [a b] = deconv (p1, p2)
+
+% Derivatives of Polynomials
+% The buil-in fucntion p o l y d e r can be used to calculate the
+% derivative of a single polynomials, a product of two polynomial
+% or a quotient of two polynomials:
+% k = polyder(p), where p - polynomial vector; k - derivative vector
+% k = polyder(a, b), a*b - product vector, k - derivative product vector 
+% [n d] = polyder(u, v), u/v - quatient polynomial, n/d -quatioen derivative
+
+f1 = [3 -2 4]
+f2 = [1 0 5]
+k = polyder (f1)
+d = polyder (f1, f2)
+[n d] = polyder (f1, f2)
+
+% 8.2 Curve Fitting
+% Curve fitting, also called regression analysis, is a process of fitting a
+% fucntion to a set of data points. The function can then be used as a
+% matehmatical model of the data. 
