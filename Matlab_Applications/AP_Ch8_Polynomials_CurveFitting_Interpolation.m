@@ -166,5 +166,31 @@ tm = 0:0.1:5;
 wm = b*exp(m*tm);
 plot(t,w,'o',tm,wm)
 
+% -----------------------------------------------------------------
+% Interpolation is estimation of values between data points.
+% MATLAB has interpolation based on:
+% a) Polynomials
+% b) Fourier transformation
+% yi = interpl (x, y, xi, 'method')
+% x - horizontal coordinates of the input data point
+% y - vertical coordinates of the input data point 
+% xi - horizontal coordinates of the interpolation points
+% 'method' = of the interpolation:
+% 'nearest' - nearest to the interpolated points
+% 'linear' - linear spline
+% 'spline' - cubic spline
+% 'pchip' - Hermite or 'cubic' interpolation
 
-
+x = 0 : 1.0 : 5;
+y = [1.0 -0.6242 -1.4707 3.2406 -0.7366 -6.3717];
+xi = 0 :0.1 : 5;
+yilin = interp1 (x,y,xi,'linear');
+yispl = interp1 (x,y,xi,'spline');
+yipch = interp1 (x,y,xi,'pchip');
+yfun = 1.5.^xi.*cos(2*xi);
+subplot(1,3,1)
+plot(x,y,'o',xi,yfun,xi,yilin,'--');
+subplot(1,3,2)
+plot(x,y,'o',xi,yfun,xi,yispl,'--');
+subplot(1,3,3)
+plot(x,y,'o',xi,yfun,xi,yipch,'--');
