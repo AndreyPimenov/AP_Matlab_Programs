@@ -148,3 +148,68 @@ xlabel('x'); ylabel('y'); zlabel('z');
 view (3) % default
 
 %--------------------------------------
+
+% Sample - Problem 10-1: 3-D projectile trajectory
+v0 = 250; g = 9.81; theta = 65;
+x0 = 3000; vx = -30;
+v0z = v0*sin(theta*pi/180);
+v0y = v0*cos(theta*pi/180);
+t = 2*v0z/g;
+tplot = linspace(0,t,100);
+z = v0z*tplot - 0.5*g*tplot.^2;
+y = v0y*tplot;
+x = x0 + vx*tplot
+xnowind (1:length(y)) = x0; % constant x cooerdinate when npo wind
+plot3(x,y,z,'r-',xnowind,y,z,'g--')
+grid on
+axis([0 6000 0 6000 0 2800])
+xlabel('x'); ylabel('y'); zlabel('z');
+
+% Sample - Problem 10-2: Electric potential of 2 point charges
+% The electric field of two or more particles is calculated by using
+% superposition
+% The porblem is solved by following steps:
+% a) Grid is created in xy plane with the domain x,y = [-0.2; 0.2] 
+% b) The distance from each grid point to each of the charges is calculated
+% c) The electric potential at each point is calculated
+% d) The electric potential os plotted
+eps0 = 8.85e-12; q1 = 2e-10; q2 = 3e-10;
+k = 1 / (4*pi*eps0);
+x = -0.2: 0.01 : 0.2;
+y = -0.2: 0.01 : 0.2;
+[X, Y] = meshgrid(x,y);
+r1 = sqrt((X+0.25).^2 + Y.^2);
+r2 = sqrt((X-0.25).^2 + Y.^2);
+V = k*(q1./r1 + q2./r2);
+mesh(X,Y,V)
+xlabel('x (m)'); ylabel('y (m)'); zlabel('V (V)');
+
+% Sample Problem 10-3: Heat conduction in a square plane
+% The temperature distribution T(x,y) in the plate can be determined
+% by solving the 2-D heat equation. For the given boundary conditions
+% T(x,y) can be expressed analytically by Fourier series.
+% (read advanced engineering mathematics)
+% a) Create X,Y grid in the domain; a,b = 20,16 segments respectavailly  
+% b) Calculate the T at each point of the mesh. Calculations are done
+%    point by point using a double loop. At each point the temperature 
+%    is determined by adding k terms of the Fourier series.
+% c) make a surface plit of T
+a = 5; b = 4; na =200; nb =106; k =50; T0 = 80;
+clear T
+x = linspace(0,a,na);
+y = linspace(0,b,nb);
+[X,Y] = meshgrid (x,y); % creating a grid in teh x y plane 
+for i = 1:nb            % 1st loop is the index of the grid's row 
+    for j =1:na         % 2nd loop is the index of the grid's column   
+        T(i,j)=0;
+        for n=1:k       % 3rd loop is nth term of Fourier series
+            ns = 2*n -1; % k is the number of terms
+        T(i,j) = T(i,j)+sin(ns*pi*X(i,j)/a).*sinh(ns*pi*Y(i,j)/a)/(sinh(ns*pi*b/a)*ns);
+        end
+        T(i,j) = T(i,j) * 4 * T0 / pi;
+    end
+end
+mesh(X,Y,T)
+xlabel('x (m)'); ylabel('y (m)'); zlabel('T (^oC)');
+view(120,130);
+
