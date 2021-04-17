@@ -137,3 +137,56 @@ S = 10*x + 12*y + 16*t
 AN = solve(S, 5*x - y - 13*t)
 AN.x
 AN.y
+% --------------
+
+% 11.4 Differentiation
+syms x y t
+S = exp(x^4);
+diff(S)
+diff(S, 2)
+diff((1 - 4*x)^3)
+
+% 11.5 Integration
+S = 2*cos(x) - 6*x;
+int(S)
+R = 5*y^2*cos(4*t);
+int(R)
+int(R,t)
+int (sin(y) - 5*y^2, 0, pi)
+
+% 11.6 Solving an ODE
+% Can be solved symbolically by d s o l v e commnad.
+% General solution: 
+dsolve('Dy = 4*t + 2*y')
+dsolve('D2x + 2*Dx + x = 0')
+
+dsolve('Ds = a*x^2')
+dsolve('Ds = a*x^2','x')
+dsolve('Ds = a*x^2','a')
+
+% Particular solution:
+dsolve('Dy + 4*y = 60', 'y(0)=5') %1st order ODE
+dsolve('D2y - 2*Dy + 2*y = 0', 'y(0)=1', 'Dy(0)=0')
+factor(ans)
+%---------
+
+% 11.7 Plotting Symbolic Expressions
+% In many cases is need to plot a symbolic expression. This can be done
+% with the e z p l o t command. 
+S = (3*x+2)/(4*x-1)
+ezplot(S)
+
+S = 4*x^2 - 18*x + 4*y^2 + 12*y - 11
+ezplot(S)
+
+x = cos(2*t)
+y = sin(4*t)
+ezplot(x,y)
+
+% 11.8 Numerical Calculations with Symbolic expresions
+% R = subs(S,var, number)
+% R = subs(S, {var1,.. vari,.. varn}, {number1,..numberi,..numbern}
+syms A c m x y
+S = A*cos(m*x) + c*y
+A =10; m = 0.5; c = 3;
+subs (S)
