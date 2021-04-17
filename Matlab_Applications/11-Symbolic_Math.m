@@ -190,3 +190,6 @@ syms A c m x y
 S = A*cos(m*x) + c*y
 A =10; m = 0.5; c = 3;
 subs (S)
+
+x = linspace(0, 2*pi, 4);
+T = subs(S)
