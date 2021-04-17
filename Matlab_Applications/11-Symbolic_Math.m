@@ -68,3 +68,46 @@ f = sym( a*x^2 + b*x + c)
 % expression
 SA = x + y, SB = x - y
 F = SA^2/ SB^3 + x^2
+% ------------------------------
+
+% 11.1.3 The s y m v a r Commnad & the Default Symbolic Variable
+%
+syms x h w y d t
+S = h*x^2 + d*y^2 + t*w^2
+symvar(S) % alphabetic order
+symvar(S, 1) % default order
+
+% The c o l l e c t command collects the terms in teh expression that have
+% the varibale with the same power. In the new wxpression, the terms will
+% be ordered in decreasing order of power.
+S = (x^2 + x - exp(x))*(x+3)
+F = collect(S)
+% The user can specify the 1st variable by using the collect(S,variable_name)
+
+% The e x p a n d command expnands expressions in two ways. It carries out
+% products of terms that include summation (used with at least one of the
+% terms), and it uses trigonometric identities and exponential and
+% logarithmic laws to expand corresponding terms that include summation.
+syms a x y
+S = (x + 5) * (x - a) * (x + 4)
+T = expand (S)
+Trig = expand(sin(x-y))
+
+% The f a c t o r commnad changes an expression that is a polynomial to a
+% product of polynomials of a lower degreee. 
+S = x^3 + 4*x^2 - 11*x - 30
+F = factor(S)
+
+% The s i m p l f y command is a general tool for simplying the form 
+% of an expression.
+S = (x^2 + 5*x + 6) / (x + 2)
+SA = simplify(S)
+simplify((x + y) / (1/ x + 1/y))
+
+% The p r e t t y command displays a symbolic expression in a format
+% resembling the mathematical format in which expressions are generaly
+% typed. pretty(S)
+pretty(S)
+
+%----------------------------------
+
