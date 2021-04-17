@@ -111,3 +111,29 @@ pretty(S)
 
 %----------------------------------
 
+% 11.3 Solving Algebraic Equations
+% h = solve(exp(2*z)-5)
+
+S = x^2 - x - 6
+k = solve(S)
+
+T = a*x^2 + 5*b*x + 20
+solve(T)
+M = solve (T,a)
+
+ts = solve(4*t*h^2 + 20*t -5*g, t)
+gs = solve(4*t*h^2 + 20*t -5*g, g)
+
+% Solving the system of equations
+% output = solve (eq1, eq2, ..., eqn) 
+% output = solve (eq1, eq2, ..., eqn, var1, var2, ... , varn)
+
+syms x y t
+S = 10*x + 12*y + 16*t
+[xt yt] = solve(S, 5*x - y - 13*t)
+[xt yt] = solve(S, 5*x - y - 13*t,t,y) 
+
+S = 10*x + 12*y + 16*t
+AN = solve(S, 5*x - y - 13*t)
+AN.x
+AN.y
